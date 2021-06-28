@@ -16,9 +16,9 @@ from dash.dependencies import Input, Output
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG], meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1, maximum-scale=1"}])
 server = app.server
 
-students_df = pd.read_excel("Book1.xlsx")
-subjects_df = pd.read_excel("Book1.xlsx", 1)
-marks_df = pd.read_excel("Book1.xlsx", 2)
+students_df = pd.read_csv("el_21_students.csv")
+subjects_df = pd.read_csv("el_21_subjects.csv")
+marks_df = pd.read_csv("el_21_marks_updated_back.csv")
 
 # print("students_df=", "\n", students_df, "\n", "subjects_df=", "\n", subjects_df, "\n", "marks_df=", "\n",marks_df, "\n")
 
@@ -140,7 +140,7 @@ app.layout = dbc.Container([
                         options=[
                             {'label': f'{i}', 'value': f'{i}'} for i in sems
                         ],
-                        value=f'{sems[0]}'
+                        value=f'{sems[-1]}'
                     )
                 ])
                 
@@ -276,7 +276,7 @@ app.layout = dbc.Container([
 def card(roll_no, sem):
 
     filtered_marks_df=marks_df.loc[marks_df["roll_no"] == int(roll_no)]
-    sub_fil_roll_marks_df=pd.merge(subjects_df, filtered_marks_df, on="sub", how="outer")
+    sub_fil_roll_marks_df=pd.merge(subjects_df, filtered_marks_df, on="sub_code", how="outer")
 
     total_marks=sub_fil_roll_marks_df["total_marks"].sum()
 
@@ -359,8 +359,8 @@ def card(roll_no, sem):
                                 margin_l=0, margin_t=0, margin_r=0, margin_b=0
     )
 
-    fig.update_xaxes(showgrid=False, title="Semesters")
-    fig.update_yaxes(showgrid=False)
+    fig.update_xaxes(showgrid=False, color='white', title="Semesters", title_font=dict(color='white'))
+    fig.update_yaxes(showgrid=False, color='white')
 
 #############################################################################################################################################
 
@@ -368,7 +368,7 @@ def card(roll_no, sem):
 
     sub_marks_sem_filter_df=(sub_fil_roll_marks_df.loc[sub_fil_roll_marks_df["sem"] == int(sem)]).drop(["sem", "roll_no"], axis=1)
 
-    sub_marks_df = pd.merge(subjects_df, marks_df, on="sub", how="outer")
+    sub_marks_df = pd.merge(subjects_df, marks_df, on="sub_code", how="outer")
 
     sub_marks_df_fil_sem = sub_marks_df.loc[sub_marks_df["sem"] == int(sem)]
     # sub_marks_df_fil_sem
@@ -413,7 +413,8 @@ def card(roll_no, sem):
     external_marks = sub_marks_sem_filter_df["external_marks"].tolist()
     internal_marks = sub_marks_sem_filter_df["internal_marks"].tolist()
 
-    categories = sub_marks_sem_filter_df["sub"].tolist()
+    categories = sub_marks_sem_filter_df["sub_code"].tolist()
+    subject_names = sub_marks_sem_filter_df["sub_name"].tolist()
 
     polar = go.Figure([go.Scatterpolar(
                         r=total_marks,
@@ -442,15 +443,15 @@ def card(roll_no, sem):
                             legend=dict(
                             # orientation="h",
                             yanchor="top",
-                            y=1,
+                            y=1.23,
                             xanchor="right",
-                            x=1
+                            x=1.1
                             ),
                             height=300,
                             dragmode=False,
                             paper_bgcolor="rgb(0,0,0)",
                             template="plotly_dark",
-                            margin_l=20, margin_t=50, margin_r=20, margin_b=0
+                            margin_l=20, margin_t=50, margin_r=20, margin_b=10
     )
 
     polar.update_polars(bgcolor="rgb(0,0,0)",
@@ -465,25 +466,28 @@ def card(roll_no, sem):
 
     #Total Marks Bar Graph
 
-    total_graph = go.Figure([go.Bar(x=sub_marks_sem_filter_df["sub"].tolist(),
+    total_graph = go.Figure([go.Bar(x=categories,
                                 y=sub_marks_sem_filter_df["total_marks"].tolist(),
                                 text=sub_marks_sem_filter_df["total_marks"].tolist(),
-                                textposition='auto')])
+                                textposition='auto',
+                                hovertext=subject_names)])
 
-    total_graph.update_layout(title={
+    total_graph.update_layout(
+                                title={
                                     'text': "Total Marks",
                                     'y':0.9,
 
                                     'x':0.5,
                                     'xanchor': 'center',
-                                    'yanchor': 'top'},
+                                    'yanchor': 'top'
+                                    },
                                 legend=dict(
-                                orientation="h",
-                                yanchor="bottom",
-                                y=1,
-                                xanchor="right",
-                                x=1
-                                ),
+                                    orientation="h",
+                                    yanchor="bottom",
+                                    y=1,
+                                    xanchor="right",
+                                    x=1
+                                    ),
                                 height=300,
                                 dragmode=False,
                                 paper_bgcolor="rgb(0,0,0)",
@@ -501,26 +505,29 @@ def card(roll_no, sem):
     external_graph = go.Figure([go.Bar(x=categories,
                                     y=external_marks,
                                     text=external_marks,
-                                    textposition='auto')])
+                                    textposition='auto',
+                                    hovertext=subject_names)])
 
-    external_graph.update_layout(title={
+    external_graph.update_layout(
+                                title={
                                     'text': "External Marks",
                                     'y':0.9,
                                     'x':0.5,
                                     'xanchor': 'center',
-                                    'yanchor': 'top'},
-                                    legend=dict(
+                                    'yanchor': 'top'
+                                    },
+                                legend=dict(
                                     orientation="h",
                                     yanchor="bottom",
                                     y=1,
                                     xanchor="right",
                                     x=1
                                     ),
-                                    height=300,
-                                    dragmode=False,
-                                    paper_bgcolor="rgb(0,0,0)",
-                                    plot_bgcolor="rgb(0,0,0)",
-                                    margin_l=0, margin_t=60, margin_r=0, margin_b=0
+                                height=300,
+                                dragmode=False,
+                                paper_bgcolor="rgb(0,0,0)",
+                                plot_bgcolor="rgb(0,0,0)",
+                                margin_l=0, margin_t=60, margin_r=0, margin_b=0
     )
 
     external_graph.update_traces(marker_color='rgb(255,0,0)', marker_line_color='rgb(255,0,0)',marker_line_width=1.5, opacity=0.5)
@@ -533,26 +540,29 @@ def card(roll_no, sem):
     internal_graph = go.Figure([go.Bar(x=categories,
                                     y=internal_marks,
                                     text=internal_marks,
-                                    textposition='auto')])
+                                    textposition='auto',
+                                    hovertext=subject_names)])
 
-    internal_graph.update_layout(title={
+    internal_graph.update_layout(
+                                title={
                                     'text': "Internal Marks",
                                     'y':0.9,
                                     'x':0.5,
                                     'xanchor': 'center',
-                                    'yanchor': 'top'},
-                                    legend=dict(
+                                    'yanchor': 'top'
+                                    },
+                                legend=dict(
                                     orientation="h",
                                     yanchor="bottom",
                                     y=1,
                                     xanchor="right",
                                     x=1
                                     ),
-                                    height=300,
-                                    dragmode=False,
-                                    paper_bgcolor="rgb(0,0,0)",
-                                    plot_bgcolor="rgb(0,0,0)",
-                                    margin_l=0, margin_t=60, margin_r=0, margin_b=0
+                                height=300,
+                                dragmode=False,
+                                paper_bgcolor="rgb(0,0,0)",
+                                plot_bgcolor="rgb(0,0,0)",
+                                margin_l=0, margin_t=60, margin_r=0, margin_b=0
     )
 
     internal_graph.update_traces(marker_color='rgb(255,0,0)', marker_line_color='rgb(255,0,0)',marker_line_width=1.5, opacity=0.5)
