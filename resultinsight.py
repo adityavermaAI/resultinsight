@@ -60,7 +60,7 @@ app.layout = dbc.Container([
                     options=[
                         {'label': f'{i}', 'value': f'{i}'} for i in roll_nos
                     ],
-                    value=f'{roll_nos[0]}'
+                    value=f'{roll_nos[5]}'
                     )
                 ])
                 
