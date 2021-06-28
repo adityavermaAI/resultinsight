@@ -218,7 +218,7 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             dcc.Graph(id='total-bar',
-                        animate=True,
+                        # animate=True,
                         config={'displayModeBar': False}
             )
         ],
@@ -230,7 +230,7 @@ app.layout = dbc.Container([
 
         dbc.Col([
             dcc.Graph(id='external-bar',
-                        animate=True,
+                        # animate=True,
                         config={'displayModeBar': False}
             )
         ],
@@ -242,7 +242,7 @@ app.layout = dbc.Container([
 
         dbc.Col([
             dcc.Graph(id='internal-bar',
-                        animate=True,
+                        # animate=True,
                         config={'displayModeBar': False}
             )
         ],
