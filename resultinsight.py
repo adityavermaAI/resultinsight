@@ -96,7 +96,7 @@ app.layout = dbc.Container([
             dbc.Row([
                 dbc.Col([
                     dcc.Graph(id='graph',
-                                animate=True,
+                                # animate=True,
                                 config={'displayModeBar': False}
                     )
                 ],
@@ -320,17 +320,26 @@ def card(roll_no, sem):
     
     #Graphs
 
+    sub_marks_df = pd.merge(subjects_df, marks_df, on="sub_code", how="outer")
+
+    sub_marks_df_gp_sem = sub_marks_df.groupby("sem")
+
+    sem_wise_class_average_total_marks = []
+
+    for g, df in sub_marks_df_gp_sem:
+       sem_wise_class_average_total_marks.append(round((df["total_marks"].sum())/df.roll_no.nunique()))
+
     sub_fil_roll_marks_df_sem=sub_fil_roll_marks_df.groupby("sem")
     sems=[]
-    sem_wise_sum_internal_marks=[]
-    sem_wise_sum_external_marks=[]
+    # sem_wise_sum_internal_marks=[]
+    # sem_wise_sum_external_marks=[]
     sem_wise_sum_total_marks=[]
 
     for g, df in sub_fil_roll_marks_df_sem:
         # print(g, df["internal_marks"].sum(), df["external_marks"].sum(), df["total_marks"].sum(), "\n")
         sems.append(g)
-        sem_wise_sum_internal_marks.append(df["internal_marks"].sum())
-        sem_wise_sum_external_marks.append(df["external_marks"].sum())
+        # sem_wise_sum_internal_marks.append(df["internal_marks"].sum())
+        # sem_wise_sum_external_marks.append(df["external_marks"].sum())
         sem_wise_sum_total_marks.append(df["total_marks"].sum())
 
     #All Semesters Graph
@@ -339,8 +348,8 @@ def card(roll_no, sem):
     
     fig=go.Figure(
         data=[go.Scatter(x=sems, y=sem_wise_sum_total_marks, name="Total", mode="lines"),
-            go.Scatter(x=sems, y=sem_wise_sum_external_marks, name="External", mode="lines"),
-            go.Scatter(x=sems, y=sem_wise_sum_internal_marks, name="internal", mode="lines")
+            go.Scatter(x=sems, y=sem_wise_class_average_total_marks, name="Class Average", mode="lines", line=dict(color='rgb(255, 255, 0)')),
+            # go.Scatter(x=sems, y=sem_wise_sum_internal_marks, name="internal", mode="lines")
              ]
     )
 
@@ -367,8 +376,6 @@ def card(roll_no, sem):
     #Semester Marks Card
 
     sub_marks_sem_filter_df=(sub_fil_roll_marks_df.loc[sub_fil_roll_marks_df["sem"] == int(sem)]).drop(["sem", "roll_no"], axis=1)
-
-    sub_marks_df = pd.merge(subjects_df, marks_df, on="sub_code", how="outer")
 
     sub_marks_df_fil_sem = sub_marks_df.loc[sub_marks_df["sem"] == int(sem)]
     # sub_marks_df_fil_sem
