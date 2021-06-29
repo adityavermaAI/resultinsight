@@ -1,9 +1,3 @@
-# from dash_bootstrap_components._components.Col import Col
-# from dash_bootstrap_components._components.Row import Row
-# from dash_core_components.Graph import Graph
-# from dash_html_components.Br import Br
-# from dash_html_components.Center import Center
-# from dash_html_components.Div import Div
 import pandas as pd
 import dash
 import dash_bootstrap_components as dbc
@@ -15,6 +9,35 @@ from dash.dependencies import Input, Output
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG], meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1, maximum-scale=1"}])
 server = app.server
+
+app.index_string = '''<!DOCTYPE html>
+<html>
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SQV8P1GH6E"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-SQV8P1GH6E');
+  </script>
+  <!-- End Global Google Analytics -->
+{%metas%}
+<title>{%title%}</title>
+{%favicon%}
+{%css%}
+</head>
+<body>
+{%app_entry%}
+<footer>
+{%config%}
+{%scripts%}
+{%renderer%}
+</footer>
+</body>
+</html>
+'''
 
 students_df = pd.read_csv("el_21_students.csv")
 subjects_df = pd.read_csv("el_21_subjects.csv")
