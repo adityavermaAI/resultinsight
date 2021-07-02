@@ -39,40 +39,55 @@ app.index_string = '''<!DOCTYPE html>
 </html>
 '''
 
-students_df = pd.read_csv("el_21_students.csv")
-subjects_df = pd.read_csv("el_21_subjects.csv")
-marks_df = pd.read_csv("el_21_marks_updated_back.csv")
+students_df = pd.read_csv("el_cs_21_students.csv")
+subjects_df = pd.read_csv("el_cs_21_subjects.csv")
+marks_df = pd.read_csv("el_cs_21_marks.csv")
 
-# print("students_df=", "\n", students_df, "\n", "subjects_df=", "\n", subjects_df, "\n", "marks_df=", "\n",marks_df, "\n")
+subjects_df.drop_duplicates(inplace=True)
+
+stu_marks_df = pd.merge(students_df, marks_df, on="roll_no", how="inner").drop(["name", "gender"], axis=1)
+
+def get_branch(roll_no):
+
+    el_branch_code = "30"
+    cs_branch_code = "10"
+    ee_branch_code = "20"
+    civil_branch_code = "00"
+    
+    if len(roll_no) ==10:
+        
+        if roll_no[5:7] == el_branch_code:
+            return("ELECTRONICS ENGINEERING")
+
+        elif roll_no[5:7] == cs_branch_code:
+            return("COMPUTER SCIENCE AND ENGINEERING")
+            
+        elif roll_no[5:7] == ee_branch_code:
+            return("Electrical Branch")
+            
+        elif roll_no[5:7] == civil_branch_code:
+            return("civil Branch")
+            
+    elif len(roll_no) == 13:
+        
+        if roll_no[7:9] == el_branch_code:
+            return("Electronics Branch")
+
+        elif roll_no[7:9] == cs_branch_code:
+            return("Computer Science Branch")
+            
+        elif roll_no[7:9] == ee_branch_code:
+            return("Electrical Branch")
+            
+        elif roll_no[7:9] == civil_branch_code:
+            return("civil Branch")
 
 roll_nos = list(students_df.iloc[:, 0])
-# print("roll_nos=", roll_nos)
 
 sems = subjects_df["sem"].unique()
-# print(sems)
 
 app.layout = dbc.Container([
-    # dbc.Row([
-    #     dbc.Col([
-    #         html.Center([
-    #             html.H2("ResultInsight"
-    #             )
-    #         ])
-            
-    #     ],
-    #     xs=12,
-    #     sm=12,
-    #     md=12,
-    #     lg=12,
-    #     xl=12
-    #     )
-            
-    # ],
-    # justify="center", align="center"
-    # ),
-
-    # html.Br(),
-
+    
     dbc.Row([
         dbc.Col([
             dbc.Row([
@@ -88,33 +103,6 @@ app.layout = dbc.Container([
                 ])
                 
             ]),
-
-            # html.Br(),
-
-            # dbc.Row([
-            #     dbc.Col([
-            #         html.Div(
-            #         # id="total-marks"
-            #         )
-            #     ],
-            #     style={"height":"35px"}
-            #     ),
-
-            #      dbc.Col([
-            #         html.Div(
-            #         id="total-class-average"
-            #         )
-            #     ]),
-
-            #      dbc.Col([
-            #         html.Div(
-            #         id="total-class-rank"
-            #         )
-            #     ])
-                
-            # ]),
-
-            # html.Br(),
 
             dbc.Row([
                 dbc.Col([
@@ -169,32 +157,6 @@ app.layout = dbc.Container([
                 
             ]),
 
-            # html.Br(),
-
-            # dbc.Row([
-            #     dbc.Col([
-            #         html.Div(
-            #         id="sem-marks-sum"
-            #         )
-            #     ],
-            #     style={"height":"35px"}),
-
-            #      dbc.Col([
-            #         html.Div(
-            #         id="class-sem-average"
-            #         )
-            #     ]),
-
-            #      dbc.Col([
-            #         html.Div(
-            #         id="sem-rank"
-            #         )
-            #     ])
-                
-            # ]),
-
-            # html.Br(),
-
             dbc.Row([
                 dbc.Col([
                     dcc.Graph(id='all-polar',
@@ -235,8 +197,6 @@ app.layout = dbc.Container([
         )
 
     ]),
-
-    # html.Br(),
 
     dbc.Row([
         dbc.Col([
@@ -279,8 +239,7 @@ app.layout = dbc.Container([
     style={'margin-top':"10px"} 
     # no_gutters=True
     )
-],
-# style={"color":"rgb(0,0,0)"}
+]
 )
 
 
@@ -297,9 +256,14 @@ app.layout = dbc.Container([
     Input('sem-dropdown', 'value')])
 
 def card(roll_no, sem):
+    global stu_marks_df
+
+    branch = get_branch(f"{roll_no}")
+
+    marks_df=stu_marks_df.loc[stu_marks_df["branch"] == branch]
 
     filtered_marks_df=marks_df.loc[marks_df["roll_no"] == int(roll_no)]
-    sub_fil_roll_marks_df=pd.merge(subjects_df, filtered_marks_df, on="sub_code", how="outer")
+    sub_fil_roll_marks_df=pd.merge(filtered_marks_df, subjects_df, on="sub_code", how="left")
 
     total_marks=sub_fil_roll_marks_df["total_marks"].sum()
 
@@ -310,16 +274,12 @@ def card(roll_no, sem):
     roll_wise_sum_total_marks_dict = {}
 
     for g, df in marks_df_gp_roll:
-    #     print(g, df["internal_marks"].sum(), df["external_marks"].sum(), df["total_marks"].sum(), "\n")
         roll_wise_sum_total_marks_dict.update({g:df['total_marks'].sum()})
         
-    # roll_wise_sum_total_marks_dict
 
     total_class_avg = round(sum(roll_wise_sum_total_marks_dict.values()) / len(roll_wise_sum_total_marks_dict))
-    # total_class_avg
 
     roll_wise_sum_total_marks_dict_sorted = dict(sorted(roll_wise_sum_total_marks_dict.items(), key=lambda item: item[1], reverse=True))
-    # roll_wise_sum_total_marks_dict_sorted
 
     total_class_rank = list(roll_wise_sum_total_marks_dict_sorted.keys()).index(int(roll_no)) + 1
 
@@ -332,7 +292,7 @@ def card(roll_no, sem):
                                         html.H5(f"{total_class_avg}", className="card-title"),
                                         html.P("class Average Marks"),
                                         html.H5(f"{total_class_rank}", className="card-title"),
-                                        html.P("Rank")
+                                        html.P("Overall Rank")
                                     ])
                                     
                                 ]
@@ -343,36 +303,30 @@ def card(roll_no, sem):
     
     #Graphs
 
-    sub_marks_df = pd.merge(subjects_df, marks_df, on="sub_code", how="outer")
+    sub_marks_df = pd.merge(marks_df, subjects_df, on="sub_code", how="left")
 
     sub_marks_df_gp_sem = sub_marks_df.groupby("sem")
 
     sem_wise_class_average_total_marks = []
+    sems_all=[]
 
     for g, df in sub_marks_df_gp_sem:
        sem_wise_class_average_total_marks.append(round((df["total_marks"].sum())/df.roll_no.nunique()))
+       sems_all.append(g)
 
     sub_fil_roll_marks_df_sem=sub_fil_roll_marks_df.groupby("sem")
     sems=[]
-    # sem_wise_sum_internal_marks=[]
-    # sem_wise_sum_external_marks=[]
     sem_wise_sum_total_marks=[]
 
     for g, df in sub_fil_roll_marks_df_sem:
-        # print(g, df["internal_marks"].sum(), df["external_marks"].sum(), df["total_marks"].sum(), "\n")
         sems.append(g)
-        # sem_wise_sum_internal_marks.append(df["internal_marks"].sum())
-        # sem_wise_sum_external_marks.append(df["external_marks"].sum())
         sem_wise_sum_total_marks.append(df["total_marks"].sum())
 
     #All Semesters Graph
-
-    # fig = px.line(x=sems, y=sem_wise_sum_internal_marks, title='Life expectancy in Canada')
     
     fig=go.Figure(
-        data=[go.Scatter(x=sems, y=sem_wise_sum_total_marks, name="Total", mode="lines"),
-            go.Scatter(x=sems, y=sem_wise_class_average_total_marks, name="Class Average", mode="lines", line=dict(color='rgb(255, 255, 0)')),
-            # go.Scatter(x=sems, y=sem_wise_sum_internal_marks, name="internal", mode="lines")
+        data=[go.Scatter(x=sems, y=sem_wise_sum_total_marks, name="Your Marks", mode="lines"),
+            go.Scatter(x=sems_all, y=sem_wise_class_average_total_marks, name="Class Average", mode="lines", line=dict(color='rgb(255, 255, 0)')),
              ]
     )
 
@@ -388,7 +342,8 @@ def card(roll_no, sem):
                                 dragmode=False,
                                 paper_bgcolor="rgb(0,0,0)",
                                 plot_bgcolor="rgb(0,0,0)",
-                                margin_l=0, margin_t=0, margin_r=0, margin_b=0
+                                margin_l=0, margin_t=0, margin_r=0, margin_b=0,
+                                template="plotly_dark"
     )
 
     fig.update_xaxes(showgrid=False, color='white', title="Semesters", title_font=dict(color='white'))
@@ -398,26 +353,21 @@ def card(roll_no, sem):
 
     #Semester Marks Card
 
-    sub_marks_sem_filter_df=(sub_fil_roll_marks_df.loc[sub_fil_roll_marks_df["sem"] == int(sem)]).drop(["sem", "roll_no"], axis=1)
+    sub_fil_roll_marks_fil_sem_df=(sub_fil_roll_marks_df.loc[sub_fil_roll_marks_df["sem"] == int(sem)]).drop(["sem", "roll_no"], axis=1)
 
     sub_marks_df_fil_sem = sub_marks_df.loc[sub_marks_df["sem"] == int(sem)]
-    # sub_marks_df_fil_sem
 
     sub_marks_df_fil_sem_gp_roll = sub_marks_df_fil_sem.groupby("roll_no")
 
     roll_wise_sem_fil_sum_total_marks_dict = {}
 
     for g, df in sub_marks_df_fil_sem_gp_roll:
-    #     print(g, df["internal_marks"].sum(), df["external_marks"].sum(), df["total_marks"].sum(), "\n")
         roll_wise_sem_fil_sum_total_marks_dict.update({g:df['total_marks'].sum()})
         
-    # roll_wise_sem_fil_sum_total_marks_dict
 
     sem_avg = round(sum(roll_wise_sem_fil_sum_total_marks_dict.values()) / len(roll_wise_sem_fil_sum_total_marks_dict))
-    # sem_avg
 
     roll_wise_sem_fil_sum_total_marks_dict_sorted = dict(sorted(roll_wise_sem_fil_sum_total_marks_dict.items(), key=lambda item: item[1], reverse=True))
-    # roll_wise_sem_fil_sum_total_marks_dict_sorted
 
     sem_rank = list(roll_wise_sem_fil_sum_total_marks_dict_sorted.keys()).index(int(roll_no)) + 1
 
@@ -425,12 +375,12 @@ def card(roll_no, sem):
                         dbc.CardBody(
                             [
                                 html.Center([
-                                    html.H5(f"{sub_marks_sem_filter_df['total_marks'].sum()}", className="card-title"),
+                                    html.H5(f"{sub_fil_roll_marks_fil_sem_df['total_marks'].sum()}", className="card-title"),
                                     html.P("Semester Marks"),
                                     html.H5(f"{sem_avg}", className="card-title"),
                                     html.P("Class Average Marks"),
                                     html.H5(f"{sem_rank}", className="card-title"),
-                                    html.P("Rank")
+                                    html.P("Semester Rank")
                                 ])
                                 
                             ]
@@ -439,12 +389,12 @@ def card(roll_no, sem):
     
 ###########################################################################################################################
 
-    total_marks = sub_marks_sem_filter_df["total_marks"].tolist()
-    external_marks = sub_marks_sem_filter_df["external_marks"].tolist()
-    internal_marks = sub_marks_sem_filter_df["internal_marks"].tolist()
+    total_marks = sub_fil_roll_marks_fil_sem_df["total_marks"].tolist()
+    external_marks = sub_fil_roll_marks_fil_sem_df["external_marks"].tolist()
+    internal_marks = sub_fil_roll_marks_fil_sem_df["internal_marks"].tolist()
 
-    categories = sub_marks_sem_filter_df["sub_code"].tolist()
-    subject_names = sub_marks_sem_filter_df["sub_name"].tolist()
+    categories = sub_fil_roll_marks_fil_sem_df["sub_code"].tolist()
+    subject_names = sub_fil_roll_marks_fil_sem_df["sub_name"].tolist()
 
     polar = go.Figure([go.Scatterpolar(
                         r=total_marks,
@@ -497,8 +447,8 @@ def card(roll_no, sem):
     #Total Marks Bar Graph
 
     total_graph = go.Figure([go.Bar(x=categories,
-                                y=sub_marks_sem_filter_df["total_marks"].tolist(),
-                                text=sub_marks_sem_filter_df["total_marks"].tolist(),
+                                y=sub_fil_roll_marks_fil_sem_df["total_marks"].tolist(),
+                                text=sub_fil_roll_marks_fil_sem_df["total_marks"].tolist(),
                                 textposition='auto',
                                 hovertext=subject_names)])
 

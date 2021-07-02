@@ -66,3 +66,70 @@ REC751,Optical Communication Lab,Practical,7
 REC752,Electronics Circuit Design Lab,Practical,7
 REC753,Industrial Training VivaVoce,Practical,7
 REC754,Project-I,Practical,7
+RAS101,Engineering Physics-I,Theory,1
+REC101,Basics Electronics,Theory,1
+RAS103,Engineering Maths-I,Theory,1
+REE101,Basics Electrical Engg.,Theory,1
+RAS104,Professional Communication,Theory,1
+RAS151,Engg. Physics Lab,Practical,1
+REE151,Basics Electrical Engg. Lab,Practical,1
+RAS154,Professional Communication Lab,Practical,1
+RME152,Workshop Practice,Practical,1
+RAS203,Engineering Maths-II,Theory,2
+RAS201,Engineering Physics-II,Theory,2
+RME201,Elements of Mechanical Engg.,Theory,2
+RCS201,Computer System & Programming in C,Theory,2
+RAS202,Engineering Chemistry,Theory,2
+RAS252,Engg. Chemistry Lab,Practical,2
+RME251,Elements of Mechanical Engg. Lab,Practical,2
+RCS251,Computer Progm. Lab,Practical,2
+RCE251,Computer Aided Engg. Graphics,Practical,2
+ROE037,Material Science,Theory,3
+RAS302,Environment & Ecology,Theory,3
+REC301,Digital Logic Design,Theory,3
+RCS301,Discrete Structures & Theory of Logic,Theory,3
+RCS302,Computer Organization and Architecture,Theory,3
+RCS305,Data Structures,Theory,3
+REC351,Digital Logic Design Lab,Practical,3
+RCS351,Discrete Structure & Logic Lab,Practical,3
+RCS352,Computer Organization Lab,Practical,3
+RCS355,Data Structures Using C/ Java Lab,Practical,3
+RAS401,Mathematics-III,Theory,4
+RVE401,Universal Human Values & Professional Ethics,Theory,4
+REC405,Introduction to Microprocessor,Theory,4
+RCS401,Operating Systems,Theory,4
+RCS402,Software Engineering,Theory,4
+RCS403,Theory of Automata and Formal Languages,Theory,4
+RCS451,Operating Systems Lab,Practical,4
+RCS452,Software Engineering Lab,Practical,4
+RCS453,TAFL Lab,Practical,4
+RCS454,Python Language Programming Lab,Practical,4
+RAS501,MANAGERIAL ECONOMICS,Theory,5
+RUC501,CYBER SECURITY,Theory,5
+RCS501,Database Management Systems,Theory,5
+RCS502,Design and Analysis of Algorithm,Theory,5
+RCS503,Principles of Programming Languages,Theory,5
+RCS052,WEB TECHNOLOGIES,Theory,5
+RCS551,Database Management Systems Lab,Practical,5
+RCS552,Design and Analysis of Algorithm Lab,Practical,5
+RCS553,Principles of Programming Languages Lab,Practical,5
+RCS554,Web Technologies Lab,Practical,5
+RAS601,INDUSTRIAL MANAGEMENT,Theory,6
+RAS602,Sociology,Theory,6
+RCS601,Computer Networks,Theory,6
+RCS602,Compiler Design,Theory,6
+RCS603,Computer Graphics,Theory,6
+RCS061,INTERNET OF THINGS,Theory,6
+RCS651,Computer Networks Lab,Practical,6
+RCS652,Compiler Design Lab,Practical,6
+RCS653,Computer Graphics Lab,Practical,6
+RCS654,Data Warehousing & Data Mining Lab,Practical,6
+ROE072,Introduction to Smart Grid,Theory,7
+RCS071,Application of Soft Computing,Theory,7
+RCS078,Augmented & Virtual Reality,Theory,7
+RCS701,Distributed System,Theory,7
+RCS702,Artificial Intelligence,Theory,7
+RCS751,Distributed System Lab,Practical,7
+RCS752,Artificial Intelligence Lab,Practical,7
+RCS753,Industrial Training Viva Voce,Practical,7
+RCS754,Project,Practical,7
