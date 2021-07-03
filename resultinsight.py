@@ -39,12 +39,11 @@ app.index_string = '''<!DOCTYPE html>
 </html>
 '''
 
-students_df = pd.read_csv("el_cs_21_students.csv")
-subjects_df = pd.read_csv("el_cs_21_subjects.csv")
-marks_df = pd.read_csv("el_cs_21_marks.csv")
+students_df = pd.read_csv("el_cs_ee_21_students.csv")
+subjects_df = pd.read_csv("el_cs_ee_subjects_unique.csv")
+marks_df = pd.read_csv("el_cs_ee_21_marks.csv")
 
-subjects_df.drop_duplicates(inplace=True)
-
+    
 stu_marks_df = pd.merge(students_df, marks_df, on="roll_no", how="inner").drop(["name", "gender"], axis=1)
 
 def get_branch(roll_no):
@@ -63,10 +62,10 @@ def get_branch(roll_no):
             return("COMPUTER SCIENCE AND ENGINEERING")
             
         elif roll_no[5:7] == ee_branch_code:
-            return("Electrical Branch")
+            return("ELECTRICAL ENGINEERING")
             
         elif roll_no[5:7] == civil_branch_code:
-            return("civil Branch")
+            return("CIVIL ENGINEERING")
             
     elif len(roll_no) == 13:
         
@@ -82,7 +81,8 @@ def get_branch(roll_no):
         elif roll_no[7:9] == civil_branch_code:
             return("civil Branch")
 
-roll_nos = list(students_df.iloc[:, 0])
+roll_nos = list(students_df["roll_no"])
+names = list(students_df["name"])
 
 sems = subjects_df["sem"].unique()
 
@@ -96,7 +96,7 @@ app.layout = dbc.Container([
                     dcc.Dropdown(
                     id='roll_no-dropdown',
                     options=[
-                        {'label': f'{i}', 'value': f'{i}'} for i in roll_nos
+                        {'label': f'{i}  {j}', 'value': f'{i}'} for i,j in zip(roll_nos, names)
                     ],
                     value=f'{roll_nos[5]}'
                     )
