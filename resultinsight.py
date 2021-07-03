@@ -40,7 +40,7 @@ app.index_string = '''<!DOCTYPE html>
 '''
 
 students_df = pd.read_csv("el_cs_ee_21_students.csv")
-subjects_df = pd.read_csv("el_cs_ee_subjects_unique.csv")
+subjects_df = pd.read_csv("el_cs_ee_21_subjects_unique.csv")
 marks_df = pd.read_csv("el_cs_ee_21_marks.csv")
 
     
@@ -552,4 +552,4 @@ def card(roll_no, sem):
     return total_marks_card, sem_card, fig, polar, total_graph, external_graph, internal_graph
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
