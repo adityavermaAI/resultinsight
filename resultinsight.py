@@ -10,35 +10,6 @@ from dash.dependencies import Input, Output
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG], meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1, maximum-scale=1"}])
 server = app.server
 
-app.index_string = '''<!DOCTYPE html>
-<html>
-<head>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SQV8P1GH6E"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-SQV8P1GH6E');
-  </script>
-  <!-- End Global Google Analytics -->
-{%metas%}
-<title>{%title%}</title>
-{%favicon%}
-{%css%}
-</head>
-<body>
-{%app_entry%}
-<footer>
-{%config%}
-{%scripts%}
-{%renderer%}
-</footer>
-</body>
-</html>
-'''
-
 students_df = pd.read_csv("el_cs_ee_21_students.csv")
 subjects_df = pd.read_csv("el_cs_ee_21_subjects_unique.csv")
 marks_df = pd.read_csv("el_cs_ee_21_marks.csv")
