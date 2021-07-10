@@ -1,4 +1,4 @@
-# Audio Event Detection using CNN
+# ResultInsight
 
 <p align="center">
     <a href="https://github.com/adityavermaAI/Audio-Event-Detection"><strong>Explore the docs »</strong></a>
